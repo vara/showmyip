@@ -5,6 +5,7 @@
 
 package showmyip.Gui;
 
+import showmyip.Manager.InformantListener;
 import showmyip.*;
 import java.awt.AWTException;
 import java.awt.SystemTray;
@@ -17,12 +18,10 @@ import javax.swing.ImageIcon;
  */
 public class CoreGui{
 
-    private MyIpInformation ipInfo = null;
     private MyTray mytray;
     private GuiListener guilistener = new GuiListener();
     
-    public CoreGui(MyIpInformation ipInfo){
-	this.ipInfo = ipInfo;
+    public CoreGui(){
 	
 	if(SystemTray.isSupported()){
 	    
@@ -45,6 +44,20 @@ public class CoreGui{
 	    System.exit(1);
 	}
     }
+    
+    public InformantListener getGuiListener(){
+	return guilistener;
+    }
+    
+    private void displayMessage(Message message){
+	
+	if(mytray!=null){
+	    mytray.displayMessage(message.getTitle(),message.getContent(),
+			MyTray.MessageType.valueOf(message.getMessageType().name()));
+	    mytray.setToolTip(message.getContent());
+	}
+    }
+    
     protected static ImageIcon createNavigationIcon(String imageName) {
         String imgLocation = "resources/icons/"
                              + imageName
@@ -59,26 +72,16 @@ public class CoreGui{
             return new ImageIcon(imageURL);
 	   
         }
-    }
-    public NotyficationListener getGuiListener(){
-	return guilistener;
-    }
+    }    
     
-    private class GuiListener implements NotyficationListener{
+    private class GuiListener implements InformantListener{
 
-	public void sendMessage(String message) {
-	    System.out.println(""+message);
+	public void sendMessage(Message message) {
+	    displayMessage(message);	    
 	}
 
-	public void ipChanged() {
-	    System.out.println("ip changed");
-	    mytray.displayMessage("ip changed",""+ipInfo.getMyIp(),MyTray.MessageType.NONE);
-	    mytray.setToolTip(""+ipInfo.getMyIp());
-	}
-
-	public void connectionRefused() {	   
-	    System.out.println("Connection refused");
-	}
-	
-    }
+	public void connectionRefused(Message message) {
+	    displayMessage(message);
+	}	
+    }    
 }

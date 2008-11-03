@@ -6,9 +6,12 @@
 package showmyip;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,12 +24,31 @@ public class GetInformationFromInternet {
     public GetInformationFromInternet(){
     }
     
-    public static String getIPFromSite(String sUrl,String regexp) throws Exception{
+    //simple function to check internet connection    
+    public static boolean isConnected(String sUrl){
 	
-	URL url;
+	try{
+	//InetAddress inet = InetAddress.getByName(sUrl);
+	//System.out.println("Adres hosta "+inet.getHostAddress());
+	URL  url = new URL(sUrl);	
+	URLConnection conn = url.openConnection();
+	conn.connect();
+	return true;
+	}catch(Exception e){
+	    System.out.println("\t"+new Date()+"\nTeraz brak polaczenia ");
+	    return false;
+	}
+	
+    }
+    
+    public static String getIPFromSite(WebSite web) throws ConnectException,
+									 EOFException,
+									 NoSuchFieldException{	
+	String sUrl = web.getActualSite();
+	String regexp = web.getActualRegexp();
 	String tekst;
 	try {
-	    url = new URL(sUrl);
+	    URL url = new URL(sUrl);
 	    URLConnection connection = url.openConnection();
 
 	    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -38,14 +60,14 @@ public class GetInformationFromInternet {
 		    if(matcher.find()){
 			return matcher.group();			
 		    }
-		    throw new Exception("IP not found from "+sUrl);
+		    throw new NoSuchFieldException("IP not found from "+sUrl);
 		}   
 	    }	    
 	    
 	} catch (Exception e) {
 	    //e.printStackTrace();	    
-	    throw new Exception("Can't connect to "+sUrl);
+	    throw new ConnectException("Can't connect to "+sUrl);
 	}
-	throw new Exception("IP not found from "+sUrl);
+	throw new EOFException("IP not found in Document html from "+sUrl);
     }
 }

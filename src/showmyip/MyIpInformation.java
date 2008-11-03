@@ -13,8 +13,8 @@ import java.util.Date;
  */
 public class MyIpInformation extends WebSite{
 
-    private String myIp = "";
-    private Date lastUpdate = new Date();
+    private String myIp = "NO UPDATE";
+    private Date lastUpdate = null;
     
     public MyIpInformation(){
     }

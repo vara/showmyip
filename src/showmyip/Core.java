@@ -23,11 +23,11 @@ public class Core {
 	
 	
 	UpdateManager um = new UpdateManager();
-	
-	CoreGui gui = new CoreGui();
-	
-	um.addNotyficationListener(gui.getGuiListener());
 	DefaultControlManager dcm = (DefaultControlManager) um.getControlManager();
+	
+	CoreGui gui = new CoreGui(dcm);
+	um.addNotyficationListener(gui.getGuiListener());
+	
 	
 	dcm.setLoopCheckedUM(true);
 	dcm.start();

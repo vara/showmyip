@@ -34,7 +34,8 @@ public class UpdateManager extends Informant{
 	    public void run() {
 		
 		control.setStatus(UpdateStatus.RUN);
-	
+		System.out.println("Start thread update manager");
+		
 		updateIp();//first time to update
 
 		while(control.isLoopCheckedUM()){	    
@@ -75,6 +76,7 @@ public class UpdateManager extends Informant{
 		    } catch (InterruptedException ex) {}	
 		}
 		control.setStatus(UpdateStatus.STOP);
+		System.out.println("End thread update manager");
 	    }
 	});
 	th.start();

@@ -24,9 +24,8 @@ public class MyTray extends TrayIcon
         
     
     public MyTray(String imagePath)
-    {
-        super(Toolkit.getDefaultToolkit().getImage(imagePath));        
-        init();
+    {	super(Toolkit.getDefaultToolkit().getImage(imagePath));        	
+	init();
     }    
     public MyTray(Image image){
 	super(image);
@@ -36,12 +35,13 @@ public class MyTray extends TrayIcon
     private void init(){
 	
 	popup = new PopupMenu();
-	setImageAutoSize(true);
+	//setImageAutoSize(true);
 	addMouseListener(new MouseListener() {
 
 	    public void mouseClicked(MouseEvent e) {
 		System.out.println("Mouse Clicked \nLocation on screen "+e.getLocationOnScreen()+
 				    "\nLocation On source component"+e.getPoint());
+		
 	    }
 
 	    public void mousePressed(MouseEvent e) {

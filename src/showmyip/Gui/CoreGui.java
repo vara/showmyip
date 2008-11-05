@@ -6,21 +6,22 @@
 package showmyip.Gui;
 
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.IOException;
 import showmyip.Manager.InformantListener;
 import showmyip.*;
 import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import showmyip.Manager.DefaultControlManager;
 import showmyip.Manager.UMListenerNotInitException;
 import showmyip.Manager.UpdateManager.UpdateStatus;
+import showmyip.Gui.GraphicsUtilities;
 
 /**
  *
@@ -38,7 +39,11 @@ public class CoreGui{
 	if(SystemTray.isSupported()){
 	    
 	    SystemTray st =SystemTray.getSystemTray();
-	    ImageIcon image = CoreGui.createNavigationIcon("ipIconTray2");
+	       
+	    Dimension iconSize = st.getTrayIconSize();
+	    ImageIcon image = CoreGui.createNavigationIcon("ipIconTray2",iconSize.width,
+					iconSize.height);
+	    
 	    if(image!=null)
 		try {
 		    mytray = new MyTray(image.getImage());
@@ -104,6 +109,26 @@ public class CoreGui{
 	}
     }
     
+    protected static ImageIcon createNavigationIcon(String imageName,int w,int h){
+
+	String imgLocation = "resources/icons/"
+                             + imageName
+                             + ".png";
+        URL imageURL = Core.class.getResource(imgLocation);
+	BufferedImage buffImg=null;		
+	try {
+	    buffImg = GraphicsUtilities.loadCompatibleImage(imageURL);	    
+	} catch (IOException ex) {
+	    System.out.println(""+ex.getMessage());
+	    return null;
+	}	
+	Image scaledImg = buffImg.getScaledInstance(w, h, 
+						    Image.SCALE_REPLICATE);
+	
+	//BufferedImage scaledImg = GraphicsUtilities.createThumbnail(buffImg,w,h);
+	return new ImageIcon(scaledImg);
+    }
+    
     protected static ImageIcon createNavigationIcon(String imageName) {
         String imgLocation = "resources/icons/"
                              + imageName
@@ -114,10 +139,8 @@ public class CoreGui{
             System.err.println("Resource not found: "
                                + imgLocation);
             return null;
-        } else {
-            return new ImageIcon(imageURL);
-	   
-        }
+	    
+        } else { return new ImageIcon(imageURL); }
     }    
     
     private class GuiListener implements InformantListener{

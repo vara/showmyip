@@ -8,27 +8,45 @@ package showmyip.Manager;
 import java.io.EOFException;
 import java.net.ConnectException;
 import java.util.Date;
+import javax.swing.Timer;
 import showmyip.*;
 
 /**
  *
  * @author vara
  */
+
+//use javax.swing.Timer !!!!!!!!!!!!!!!!
+
 public class UpdateManager extends Informant{
       
     private MyIpInformation ipInfo;    
-    private AbstractControlManager control = new DefaultControlManager(new UpdateManagerListener());
+    private AbstractControlManager control = null;
+    
+    private UpdateManagerListener updateManagerListener = new UpdateManagerListener();
+    //private Timer timer;
     
     public UpdateManager(MyIpInformation ip){
 	
 	ipInfo = ip;	
+	init();
     }
     
     public UpdateManager(){
-	ipInfo = new MyIpInformation();	
+	ipInfo = new MyIpInformation();		
+	init();
+    }
+    
+    private void init(){
+	//timer = new Timer(delay, listener);
     }
     
     private void createUpdateThread(){
+	
+	if(control==null){
+	    control = new DefaultControlManager(getUpdateManagerListener());
+	}
+	
 	Thread th = new Thread(new Runnable() {
 
 	    public void run() {
@@ -60,7 +78,7 @@ public class UpdateManager extends Informant{
 
 				long gapTime = control.getTimeLastUpdate()/1000;
 				System.out.println("time gap update "+gapTime);
-				if(gapTime>1800.0)
+				if(gapTime>control.getIntervalForUpdateIP())
 				    updateIp();
 			    }else{
 
@@ -87,6 +105,9 @@ public class UpdateManager extends Informant{
     }
     
     public void setControlManager(AbstractControlManager cm){
+	
+	if(cm.getUpdateManagerListener()==null)
+	    cm.setUpdateManagerListener(updateManagerListener);
 	control = cm;
     }
     
@@ -123,7 +144,11 @@ public class UpdateManager extends Informant{
 	} catch (NoSuchFieldException ex) {
 		System.out.println("\t"+new Date()+"\n"+ex.getMessage());
 	}
-    }    
+    }
+
+    public UpdateManagerListener getUpdateManagerListener() {
+	return updateManagerListener;
+    }
     public enum UpdateStatus{
 	RUN,
 	STOP,
@@ -132,16 +157,21 @@ public class UpdateManager extends Informant{
    
     private class UpdateManagerListener  extends AbstractUpdateManagerListener{
 	 
-	public void start() {
-	    if(control.getStatus()==UpdateStatus.STOP){	    
-		createUpdateThread();	    
+	public void start() throws CUMNotInitException {
+	    if(control!= null){
+		if(control.getStatus()==UpdateStatus.STOP){	    
+		    createUpdateThread();	    
+		}
 	    }
+	    else throw new CUMNotInitException("Control Manager Not Initialized") ;
 	}
 
-	public void stop() {
+	public void stop(){
+	    	    	
 	    if(control.getStatus()==UpdateStatus.RUN ||control.getStatus()==UpdateStatus.CONNECTION_REFUSED){
 		control.setLoopCheckedUM(false);    
-	    }
+	    }	    
+	    
 	}
 
 	public Date getDateLastUpdate() {

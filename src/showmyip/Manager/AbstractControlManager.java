@@ -18,7 +18,7 @@ public abstract class AbstractControlManager implements InterfaceUM,ControlUpdat
     private boolean loopCheckConnection = false;
     private UpdateStatus status = UpdateStatus.STOP;
     private long timeLastUpdate;
-    
+    private int intervalForUpdateIP = 1800; 
     public AbstractControlManager(){
 	
     }
@@ -53,5 +53,13 @@ public abstract class AbstractControlManager implements InterfaceUM,ControlUpdat
 
     public void setTimeLastUpdate(long timeLastUpdate) {
 	this.timeLastUpdate = timeLastUpdate;
+    }
+
+    public int getIntervalForUpdateIP() {
+	return intervalForUpdateIP;
+    }
+
+    public void setIntervalForUpdateIP(int val) {
+	intervalForUpdateIP = val;
     }
 }

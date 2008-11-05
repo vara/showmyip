@@ -11,6 +11,6 @@ package showmyip.Manager;
  */
 public interface ControlUpdateManager extends InfoYourStatusIP{
 
-    void start();
-    void stop();    
+    void start()throws UMListenerNotInitException,CUMNotInitException;
+    void stop()throws UMListenerNotInitException;    
 }

@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import showmyip.Manager.DefaultControlManager;
+import showmyip.Manager.UMListenerNotInitException;
 import showmyip.Manager.UpdateManager.UpdateStatus;
 
 /**
@@ -56,8 +57,12 @@ public class CoreGui{
 		    mItems[1].addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-			    	    
-			    cm.stop();
+			    try {
+
+				cm.stop();
+				
+			    } catch (UMListenerNotInitException ex) {}
+			    
 			    while(cm.getStatus()!=UpdateStatus.STOP){
 				try {				    
 				    //wait to end thread about cm.getIntervalForCheckConnection()

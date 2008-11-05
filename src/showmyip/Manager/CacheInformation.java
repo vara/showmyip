@@ -9,11 +9,11 @@ package showmyip.Manager;
  *
  * @author vara
  */
-public class CaschInformation {
+public class CacheInformation {
     
     private StringBuffer sb = new StringBuffer();
     
-    public CaschInformation(){
+    public CacheInformation(){
 	
 	for(int i=0;i<10;i++){
 	    sb.append(""+i+"\n");
@@ -22,6 +22,6 @@ public class CaschInformation {
 	System.out.println(""+sb);
     }
     public static void main(String[] args){
-	new CaschInformation();
+	new CacheInformation();
     }
 }

@@ -6,9 +6,11 @@
 package showmyip;
 
 import java.security.Security;
+import showmyip.Manager.CUMNotInitException;
 import showmyip.Manager.UpdateManager;
 import showmyip.Gui.CoreGui;
 import showmyip.Manager.DefaultControlManager;
+import showmyip.Manager.UMListenerNotInitException;
 
 /**
  *
@@ -21,18 +23,29 @@ public class Core {
 	setIPProtocolVersion4(true);
 	disableNetworkCache();
 	
+	DefaultControlManager dcm = new DefaultControlManager();
+	
 	
 	UpdateManager um = new UpdateManager();
-	DefaultControlManager dcm = (DefaultControlManager) um.getControlManager();
+	
+	um.setControlManager(dcm);
 	
 	CoreGui gui = new CoreGui(dcm);
 	um.addNotyficationListener(gui.getGuiListener());
 	
 	
 	dcm.setLoopCheckedUM(true);
-	dcm.start();
 	
-	System.out.println(""+dcm.getStatus());
+	try {
+
+	    dcm.start();
+	} catch (UMListenerNotInitException ex) {	    
+	    System.out.println(""+ex.getMessage());
+	    System.exit(1);
+	} catch (CUMNotInitException ex) {
+	    System.out.println(""+ex.getMessage());
+	    System.exit(1);
+	}
     }
     
     public static void main(String[] args) {

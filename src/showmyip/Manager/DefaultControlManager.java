@@ -14,33 +14,60 @@ import showmyip.WebSite;
  */
 public class DefaultControlManager extends AbstractControlManager{
 	
-    private AbstractUpdateManagerListener updateManager;
+    private AbstractUpdateManagerListener updateManagerListener;
     
     public DefaultControlManager(AbstractUpdateManagerListener um){
-	updateManager = um;
+	updateManagerListener = um;
     }
-
+    
+    public DefaultControlManager(){
+	updateManagerListener =null;
+    }   
+    
     public Date getDateLastUpdate() {
-	return updateManager.getDateLastUpdate();
+	return getUpdateManagerListener().getDateLastUpdate();
     }
 
     public String getIP() {
-	return updateManager.getIP();
+	return getUpdateManagerListener().getIP();
     }
 
     public String getWebSiteFromUpdate() {
-	return updateManager.getWebSiteFromUpdate();
+	return getUpdateManagerListener().getWebSiteFromUpdate();
     }
 
     public WebSite getWebSiteClassFromUpdate() {
-	return updateManager.getWebSiteClassFromUpdate();
+	return getUpdateManagerListener().getWebSiteClassFromUpdate();
     }
 
-    public void start() {
-	updateManager.start();
+    public void start() throws UMListenerNotInitException, CUMNotInitException{
+	try {
+	    
+	    if (getUpdateManagerListener() != null)
+		getUpdateManagerListener().start();
+	    
+	    else throw new UMListenerNotInitException("Update manager Listener not initialize");
+	    
+	    
+	} catch (CUMNotInitException ex) {
+	    throw ex;
+	}
     }
 
-    public void stop() {
-	updateManager.stop();
+    public void stop() throws UMListenerNotInitException{
+	
+	    if (getUpdateManagerListener() != null)
+		getUpdateManagerListener().stop();
+	    
+	    else throw new UMListenerNotInitException("Update manager Listener not initialize");
+	    
+    }
+
+    public AbstractUpdateManagerListener getUpdateManagerListener() {
+	return updateManagerListener;
+    }
+
+    public void setUpdateManagerListener(AbstractUpdateManagerListener updateManagerListener) {
+	this.updateManagerListener = updateManagerListener;
     }
 }
